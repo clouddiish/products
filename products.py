@@ -79,20 +79,38 @@ def add_product(collection):
 
 
 def delete_product(collection):
-    name = input("Name of the product to delete: ")
+    delete_name = input("Name of the product to delete: ")
 
-    to_delete = {"name": name}
+    to_delete = {"name": delete_name}
 
     deleted = collection.delete_many(to_delete)
 
     print(f"Deleted {deleted.deleted_count} documents.")
 
 
+def update_product(collection):
+    update_name = input("Name of the product to update: ")
+
+    to_update = {"name": update_name}
+
+    data = get_product_data()
+
+    if data:
+        name, category, price = data
+
+        new_values = {"name": name, "category": category, "price": price}
+
+        updated = collection.update_one(to_update, {"$set": new_values})
+
+        print(f"Updated {updated.modified_count} documents.")
+
+
 def run():
     products = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
     add_product(products)
-    delete_product(products)
+    # delete_product(products)
+    update_product(products)
 
 
 run()
