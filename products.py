@@ -20,7 +20,7 @@ def get_empty_collection(connection_url, db_name, collection_name):
     # create and get new collection
     collection = db[collection_name]
 
-    return collection
+    return collection, client
 
 
 def init_collection(collection):
@@ -129,7 +129,7 @@ def update_product(collection):
 
 
 def run():
-    products = get_empty_collection(connection_string, "shop", "products")
+    products, client = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
 
     while True:
@@ -167,6 +167,8 @@ def run():
             case _:
                 print("Invalid option. Try again.")
                 print()
+
+    client.close()
 
 
 run()
