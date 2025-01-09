@@ -49,8 +49,8 @@ def init_collection(collection):
 
 def get_product_data():
     try:
-        name = input("Name of the product: ")
-        category = input("Category of the product: ")
+        name = input("Name of the product: ").lower()
+        category = input("Category of the product: ").lower()
         price = float(input("Price of the product: "))
 
         if not name:
@@ -67,7 +67,7 @@ def get_product_data():
 
 def get_products_by_category(collection):
     try:
-        category = input("From which category do you want to see products? ")
+        category = input("From which category do you want to see products? ").lower()
         how_many = int(input("How many products do you want to see? "))
 
         to_find = {"category": category}
@@ -95,7 +95,7 @@ def add_product(collection):
 
 
 def delete_product(collection):
-    delete_name = input("Name of the product to delete: ")
+    delete_name = input("Name of the product to delete: ").lower()
 
     to_delete = {"name": delete_name}
 
@@ -105,7 +105,7 @@ def delete_product(collection):
 
 
 def update_product(collection):
-    update_name = input("Name of the product to update: ")
+    update_name = input("Name of the product to update: ").lower()
 
     to_update = {"name": update_name}
 
@@ -124,10 +124,39 @@ def update_product(collection):
 def run():
     products = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
-    get_products_by_category(products)
-    # add_product(products)
-    # # delete_product(products)
-    # update_product(products)
+
+    while True:
+        action = input(
+            """
+            What do you want to do?
+            - vp - view products by category
+            - ap - add product
+            - up - update product
+            - dp - delete product
+            - ex - exit
+            """
+        ).lower()
+
+        match action:
+            case "vp":
+                get_products_by_category(products)
+                print()
+            case "ap":
+                add_product(products)
+                print()
+            case "up":
+                update_product(products)
+                print()
+            case "dp":
+                delete_product(products)
+                print()
+            case "ex":
+                sure = input("Are you sure? (Y/N) ").lower()
+                if sure == "y":
+                    break
+            case _:
+                print("Invalid option. Try again.")
+                print()
 
 
 run()
