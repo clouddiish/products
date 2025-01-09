@@ -69,10 +69,21 @@ def add_product(collection):
         print("Name cannot be empty. Try again.")
 
 
+def delete_product(collection):
+    name = input("Name of the product to delete: ")
+
+    to_delete = {"name": name}
+
+    deleted = collection.delete_many(to_delete)
+
+    print(f"Deleted {deleted.deleted_count} documents.")
+
+
 def run():
     products = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
-    add_product(products)
+    # add_product(products)
+    delete_product(products)
 
 
 run()
