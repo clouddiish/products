@@ -65,6 +65,22 @@ def get_product_data():
         print("Name cannot be empty. Try again.")
 
 
+def get_products_by_category(collection):
+    try:
+        category = input("From which category do you want to see products? ")
+        how_many = int(input("How many products do you want to see? "))
+
+        to_find = {"category": category}
+
+        results = collection.find(to_find, {"_id": 0}).limit(how_many)
+
+        for row in results:
+            print(row)
+
+    except ValueError:
+        print("The number of products to see must be a number. Try again.")
+
+
 def add_product(collection):
     data = get_product_data()
 
@@ -108,9 +124,10 @@ def update_product(collection):
 def run():
     products = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
-    add_product(products)
-    # delete_product(products)
-    update_product(products)
+    get_products_by_category(products)
+    # add_product(products)
+    # # delete_product(products)
+    # update_product(products)
 
 
 run()
