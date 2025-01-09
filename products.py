@@ -3,10 +3,23 @@ from credentials import connection_string
 
 
 class WrongNameError(Exception):
+    """Exception raised when the product name is invalid."""
+
     pass
 
 
-def get_empty_collection(connection_url, db_name, collection_name):
+def get_empty_collection_and_client(connection_url, db_name, collection_name):
+    """
+    Gets a MongoDB collection, dropping it if it already exists.
+
+    Args:
+        connection_url (str): MongoDB connection string.
+        db_name (str): Name of the database.
+        collection_name (str): Name of the collection.
+
+    Returns:
+        tuple: A tuple containing the collection and the MongoDB client.
+    """
     client = MongoClient(connection_url)
 
     # get the database, create database if it doesn't exists
@@ -24,7 +37,12 @@ def get_empty_collection(connection_url, db_name, collection_name):
 
 
 def init_collection(collection):
+    """
+    Initializes the MongoDB collection with sample product data.
 
+    Args:
+        collection (pymongo.collection.Collection): The MongoDB collection to initialize.
+    """
     initial_data = [
         {"name": "sponge", "category": "bathroom", "price": 0.56},
         {"name": "pot", "category": "kitchen", "price": 20.99},
@@ -48,6 +66,13 @@ def init_collection(collection):
 
 
 def get_product_data():
+    """
+    Collects product data from user input.
+
+    Returns:
+        tuple: A tuple containing the product name (str), category (str), and price (float),
+               or None if invalid input is provided.
+    """
     try:
         name = input("Name of the product: ").lower()
         category = input("Category of the product: ").lower()
@@ -66,13 +91,25 @@ def get_product_data():
 
 
 def get_all_products(collection):
+    """
+    Retrieves and displays all products in the collection.
+
+    Args:
+        collection (pymongo.collection.Collection): The MongoDB collection to query.
+    """
     results = collection.find({}, {"_id": 0})
 
     for row in results:
         print(row)
 
 
-def get_products_by_category(collection):
+def get_products_by_category_with_limit(collection):
+    """
+    Retrieves and displays products from a specific category.
+
+    Args:
+        collection (pymongo.collection.Collection): The MongoDB collection to query.
+    """
     try:
         category = input("From which category do you want to see products? ").lower()
         how_many = int(input("How many products do you want to see? "))
@@ -89,6 +126,12 @@ def get_products_by_category(collection):
 
 
 def add_product(collection):
+    """
+    Adds a new product to the collection.
+
+    Args:
+        collection (pymongo.collection.Collection): The MongoDB collection to modify.
+    """
     data = get_product_data()
 
     if data:
@@ -102,6 +145,12 @@ def add_product(collection):
 
 
 def delete_product(collection):
+    """
+    Deletes products from the collection by name.
+
+    Args:
+        collection (pymongo.collection.Collection): The MongoDB collection to modify.
+    """
     delete_name = input("Name of the product to delete: ").lower()
 
     to_delete = {"name": delete_name}
@@ -112,6 +161,12 @@ def delete_product(collection):
 
 
 def update_product(collection):
+    """
+    Updates the details of a product in the collection.
+
+    Args:
+        collection (pymongo.collection.Collection): The MongoDB collection to modify.
+    """
     update_name = input("Name of the product to update: ").lower()
 
     to_update = {"name": update_name}
@@ -129,7 +184,12 @@ def update_product(collection):
 
 
 def run():
-    products, client = get_empty_collection(connection_string, "shop", "products")
+    """
+    Main function to run the application. Initializes the collection and handles user actions.
+    """
+    products, client = get_empty_collection_and_client(
+        connection_string, "shop", "products"
+    )
     init_collection(products)
 
     while True:
@@ -149,7 +209,7 @@ def run():
             case "vap":
                 get_all_products(products)
             case "vp":
-                get_products_by_category(products)
+                get_products_by_category_with_limit(products)
                 print()
             case "ap":
                 add_product(products)
