@@ -2,6 +2,10 @@ from pymongo import MongoClient
 from credentials import connection_string
 
 
+class WrongNameError(Exception):
+    pass
+
+
 def get_empty_collection(connection_url, db_name, collection_name):
     client = MongoClient(connection_url)
 
@@ -43,9 +47,32 @@ def init_collection(collection):
     collection.insert_many(initial_data)
 
 
+def add_product(collection):
+    try:
+        name = input("Name of the product: ")
+        category = input("Category of the product: ")
+        price = float(input("Price of the product: "))
+
+        if not name:
+            raise WrongNameError
+
+        new_product = {"name": name, "category": category, "price": price}
+
+        id = collection.insert_one(new_product)
+
+        print(f"Product with id {id} was added.")
+
+    except ValueError:
+        print("Price must be a number. Try again.")
+
+    except WrongNameError:
+        print("Name cannot be empty. Try again.")
+
+
 def run():
     products = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
+    add_product(products)
 
 
 run()
