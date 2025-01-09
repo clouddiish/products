@@ -65,6 +65,13 @@ def get_product_data():
         print("Name cannot be empty. Try again.")
 
 
+def get_all_products(collection):
+    results = collection.find({}, {"_id": 0})
+
+    for row in results:
+        print(row)
+
+
 def get_products_by_category(collection):
     try:
         category = input("From which category do you want to see products? ").lower()
@@ -101,7 +108,7 @@ def delete_product(collection):
 
     deleted = collection.delete_many(to_delete)
 
-    print(f"Deleted {deleted.deleted_count} documents.")
+    print(f"Deleted {deleted.deleted_count} products.")
 
 
 def update_product(collection):
@@ -118,7 +125,7 @@ def update_product(collection):
 
         updated = collection.update_one(to_update, {"$set": new_values})
 
-        print(f"Updated {updated.modified_count} documents.")
+        print(f"Updated {updated.modified_count} products.")
 
 
 def run():
@@ -129,6 +136,7 @@ def run():
         action = input(
             """
             What do you want to do?
+            - vap - view all products
             - vp - view products by category
             - ap - add product
             - up - update product
@@ -138,6 +146,8 @@ def run():
         ).lower()
 
         match action:
+            case "vap":
+                get_all_products(products)
             case "vp":
                 get_products_by_category(products)
                 print()
