@@ -47,7 +47,7 @@ def init_collection(collection):
     collection.insert_many(initial_data)
 
 
-def add_product(collection):
+def get_product_data():
     try:
         name = input("Name of the product: ")
         category = input("Category of the product: ")
@@ -56,17 +56,26 @@ def add_product(collection):
         if not name:
             raise WrongNameError
 
-        new_product = {"name": name, "category": category, "price": price}
-
-        id = collection.insert_one(new_product)
-
-        print(f"Product with id {id} was added.")
+        return name, category, price
 
     except ValueError:
         print("Price must be a number. Try again.")
 
     except WrongNameError:
         print("Name cannot be empty. Try again.")
+
+
+def add_product(collection):
+    data = get_product_data()
+
+    if data:
+        name, category, price = data
+
+        new_product = {"name": name, "category": category, "price": price}
+
+        added = collection.insert_one(new_product)
+
+        print(f"Product with id {added.inserted_id} was added.")
 
 
 def delete_product(collection):
@@ -82,7 +91,7 @@ def delete_product(collection):
 def run():
     products = get_empty_collection(connection_string, "shop", "products")
     init_collection(products)
-    # add_product(products)
+    add_product(products)
     delete_product(products)
 
 
