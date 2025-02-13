@@ -1,5 +1,10 @@
+import os
+
+from dotenv import load_dotenv
 from pymongo import MongoClient
-from credentials import connection_string
+
+load_dotenv()
+CONNECTION_STRING = os.getenv("CONNECTION_STRING")
 
 
 class WrongNameError(Exception):
@@ -187,9 +192,7 @@ def run():
     """
     Main function to run the application. Initializes the collection and handles user actions.
     """
-    products, client = get_empty_collection_and_client(
-        connection_string, "shop", "products"
-    )
+    products, client = get_empty_collection_and_client(CONNECTION_STRING, "shop", "products")
     init_collection(products)
 
     while True:
